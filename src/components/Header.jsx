@@ -7,21 +7,20 @@ function Header() {
 
   return (
     <>
-      {/* A tag <header> agora precisa ser 'relative' para o posicionamento do nome */}
       <header className="bg-surface shadow-md w-full sticky top-0 z-20">
-        <nav className="container-main py-4 flex justify-between items-center relative">
+        {/* A classe 'relative' não é mais necessária aqui */}
+        <nav className="container-main py-4 flex justify-between items-center">
           
-          {/* 1. Logo à Esquerda (link para home) */}
-          <a href="/" className="z-20">
+          {/* 1. Bloco Logo + Nome à Esquerda (link para home) */}
+          <a href="/" className="z-20 flex items-center space-x-3">
             <img src={doctorData.logoUrl} alt={`Logo de ${doctorData.name}`} className="h-10 w-auto" />
+            {/* O nome agora está aqui, ao lado do logo */}
+            <span className="hidden sm:block font-display font-bold text-xl text-text-base">
+              {doctorData.name}
+            </span>
           </a>
 
-          {/* 2. Nome do Médico Centralizado (visível apenas em telas maiores) */}
-          <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <a href="/" className="font-display text-xl font-bold text-text-base hover:text-primary transition-colors">
-              {doctorData.name}
-            </a>
-          </div>
+          {/* 2. O nome centralizado foi REMOVIDO daqui */}
           
           {/* 3. Itens da Direita (Navegação Desktop e Botão Mobile) */}
           <div className="z-20">

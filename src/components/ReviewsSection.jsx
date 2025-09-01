@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react'; // 1. Importa os hooks
 
 // Importações do Swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -38,48 +38,66 @@ const ReviewCard = ({ review }) => (
 );
 
 function ReviewsSection() {
+  // 2. Lógica para detectar quando a seção está visível
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(sectionRef.current);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="reviews" className="py-16 md:py-24 bg-bg-neutral">
+    // 3. Adiciona a ref para o observador e overflow-hidden
+    <section ref={sectionRef} id="reviews" className="py-16 md:py-24 bg-bg-neutral overflow-hidden">
       <div className="container-main">
-        <div className="text-center mb-12">
+        {/* Bloco de título animado */}
+        <div className={`text-center mb-12 transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="title-main">O Que Nossos Pacientes Dizem</h2>
           <p className="subtitle mt-4 max-w-3xl mx-auto">
             A satisfação e a saúde dos nossos pacientes são nossa maior prioridade.
           </p>
         </div>
         
-        <Swiper
-          // Módulos que vamos usar
-          modules={[Pagination, Autoplay]}
-          // Configurações do carrossel
-          spaceBetween={30}
-          slidesPerView={1}
-          pagination={{ clickable: true }}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          // Configuração responsiva
-          breakpoints={{
-            // Quando a tela for >= 768px
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 30,
-            },
-            // Quando a tela for >= 1024px
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 40,
-            },
-          }}
-          className="pb-12" // Padding bottom para a paginação não ficar colada
-        >
-          {reviewsData.map(review => (
-            <SwiperSlide key={review.id} className="h-auto">
-              <ReviewCard review={review} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {/* Carrossel animado */}
+        <div className={`transition-all duration-700 ease-out delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <Swiper
+            modules={[Pagination, Autoplay]}
+            spaceBetween={30}
+            slidesPerView={1}
+            pagination={{ clickable: true }}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 30,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 40,
+              },
+            }}
+            className="pb-12"
+          >
+            {reviewsData.map(review => (
+              <SwiperSlide key={review.id} className="h-auto">
+                <ReviewCard review={review} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </section>
   );

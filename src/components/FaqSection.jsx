@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // 1. Importa os hooks
 import { faqData } from '@/data/faqData.js';
 
-// --- Componentes Auxiliares ---
+// --- Componentes Auxiliares (sem alterações) ---
 
-// Ícone de "seta" para indicar se o item está aberto ou fechado
 const ChevronIcon = ({ isOpen }) => (
   <svg 
     className={`w-6 h-6 text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
@@ -16,7 +15,6 @@ const ChevronIcon = ({ isOpen }) => (
   </svg>
 );
 
-// Componente para um único item do FAQ (pergunta e resposta)
 const FaqItem = ({ item, isOpen, onClick }) => {
   return (
     <div className="border-b border-gray-200 py-6">
@@ -31,7 +29,7 @@ const FaqItem = ({ item, isOpen, onClick }) => {
       <div 
         className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 mt-4' : 'max-h-0'}`}
       >
-        <p className="text-text-muted">{item.answer}</p>
+        <p className="text-text-muted pr-8">{item.answer}</p>
       </div>
     </div>
   );
@@ -41,19 +39,36 @@ const FaqItem = ({ item, isOpen, onClick }) => {
 // --- Componente Principal da Seção FAQ ---
 
 function FaqSection() {
-  // Estado para controlar qual item do FAQ está aberto. 'null' significa que todos estão fechados.
   const [openIndex, setOpenIndex] = useState(null);
 
-  // Função para lidar com o clique em uma pergunta
+  // 2. Lógica para detectar quando a seção está visível
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(sectionRef.current);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const handleItemClick = (index) => {
-    // Se o item clicado já estiver aberto, feche-o. Senão, abra-o.
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section id="faq" className="py-16 md:py-24 bg-surface">
+    // 3. Adiciona a ref para o observador e overflow-hidden
+    <section ref={sectionRef} id="faq" className="py-16 md:py-24 bg-surface overflow-hidden">
       <div className="container-main">
-        <div className="text-center mb-12">
+        {/* Bloco de título animado */}
+        <div className={`text-center mb-12 transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="title-main">Perguntas Frequentes</h2>
           <p className="subtitle mt-4 max-w-3xl mx-auto">
             Tire suas dúvidas mais comuns sobre nossos serviços e procedimentos.
@@ -62,12 +77,18 @@ function FaqSection() {
 
         <div className="max-w-4xl mx-auto">
           {faqData.map((item, index) => (
-            <FaqItem 
+            // 4. Wrapper para animar cada item do FAQ individualmente
+            <div 
               key={index}
-              item={item}
-              isOpen={openIndex === index}
-              onClick={() => handleItemClick(index)}
-            />
+              className={`transition-all duration-500 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+              style={{ transitionDelay: `${index * 100}ms` }} // Efeito cascata
+            >
+              <FaqItem 
+                item={item}
+                isOpen={openIndex === index}
+                onClick={() => handleItemClick(index)}
+              />
+            </div>
           ))}
         </div>
       </div>

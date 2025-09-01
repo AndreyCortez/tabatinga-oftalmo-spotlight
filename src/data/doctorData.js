@@ -1,6 +1,7 @@
 // Importa a imagem principal para podermos referenciá-la aqui.
 import MainPhoto from '@/assets/main_photo.png';
 import DoctorLogo from '@/assets/react.svg'; 
+import bgImage from '@/assets/consultorio-background.jpg';
 
 
 export const navLinks = [
@@ -18,11 +19,15 @@ export const doctorData = {
   logoUrl: DoctorLogo, 
   specialty: "Oftalmologia Clínica e Cirúrgica",
   location: "Vila Mariana, São Paulo - SP",
-  imageUrl: MainPhoto,
+  doctorImageUrl: MainPhoto,
   tagline: "Cuidando da saúde da sua visão com tecnologia e precisão.",
   description: "Médico Oftalmologista com Fellowship em Oculoplástica pela Faculdade de Medicina do ABC e cirurgia de catarata pelo Hospital do Servidor do Estado de Sao Paulo. Atendimentos e cirurgias pautados na ciencia, individualidade e humanidade.\
                 Atualmente, faz parte do corpo clínico como cirurgiao oftalmológico do Hospital Alemao Oswaldo Cruz, Hospital Beneficencia portuguesa e Rede D’or.",
   
+  hero: {
+    backgroundImageUrl: bgImage,
+  },
+
   credentials: {
     crm: "123.456 SP",
     rqe: "12345",
@@ -48,9 +53,9 @@ export const doctorData = {
 
     qualifications: {
     stats: [
-      { value: 15, label: "Anos de Experiência" },
-      { value: 5000, label: "Cirurgias Realizadas" },
-      { value: 10000, label: "Pacientes Satisfeitos" },
+      { value: 5, label: "Anos de Experiência" },
+      { value: 200, label: "Cirurgias Realizadas" },
+      { value: 100, label: "Pacientes Satisfeitos" },
       { value: 30, label: "Certificados e Congressos" },
     ],
     arguments: [
